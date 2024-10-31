@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rig-A-Thon Voting Sheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e3d59;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: #444;
+	font-weight: bold;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 450px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .form-container:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 255, 0.55);
+        }
+
+        .form-header h2 {
+            color: #007bff;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: none;
+        }
+
+        .active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .rig-image {
+            width: 100%;
+            max-height: 220px;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #d1d9e0;
+        }
+
+        .rating {
+            display: flex;
+            gap: 10px;
+            flex-direction: row-reverse;
+            justify-content: center;
+        }
+
+        .rating input[type="radio"] {
+            display: none;
+        }
+
+        .rating label {
+            font-size: 36px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.1s ease;
+        }
+
+        .rating label:hover,
+        .rating input[type="radio"]:checked ~ label {
+            color: #ffd700;
+        }
+
+        .rating label:active {
+            transform: scale(1.15);
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .carousel-nav button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 50%;
+            pointer-events: all;
+            transition: background-color 0.3s ease;
+            position: relative;
+
+        }
+
+	.carousel-nav button#prev-btn {
+   		 left: -80px; /* Move the previous button 40px left of container */
+	}	
+
+	.carousel-nav button#next-btn {
+   		 right: -30px; /* Move the next button 40px right of container */
+	}
+
+        .carousel-nav button:hover {
+            background-color: #0056b3;
+        }
+
+        .submit-btn {
+            background-color: #007bff;
+            color: #ffffff;
+            font-size: 15px;
+            padding: 12px 0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <div class="form-header">
+        <h2>Rig-A-Thon Voting Sheet</h2>
+    </div>
+
+    <form action="https://docs.google.com/forms/d/e/1FAIpQLSfGlphlIWUidwt9N9bzaj6GNpMIS1xLPEh29vPXrCytlBFTVA/formResponse" method="POST">
+        <!-- Name and Block Fields Always Displayed -->
+        <div class="form-group active" id="name-block-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="entry.1279098489" required style="width: 95%; padding: 10px; border: 1px solid #d1d9e0; border-radius: 8px; margin-top: 8px; margin-bottom: 15px;">
+            
+            <label for="block">Block</label>
+            <select id="block" name="entry.500440323" required style="width: 40%; padding: 10px; border: 1px solid #d1d9e0; border-radius: 8px; margin-top: 8px; margin-bottom: 15px;">
+                <option value="" disabled selected>Select a Block</option>
+                <option value="1101">1101</option>
+                <option value="1102">1102</option>
+                <option value="1103">1103</option>
+                <option value="1104">1104</option>
+            </select>
+        </div>
+
+        <!-- Container for Rig Entries (Carousel) -->
+        <div id="rig-entries"></div>
+
+        <!-- Navigation Arrows -->
+        <div class="carousel-nav">
+            <button type="button" id="prev-btn">&#10094;</button>
+            <button type="button" id="next-btn">&#10095;</button>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="submit-btn">Submit Votes</button>
+    </form>
+</div>
+
+<script>
+    const rigData = [
+        { id: '1553366336', name: 'Rak N Rig', image: 'path/to/rig1-image.jpg' },
+        { id: '597463181', name: 'Riggers', image: 'path/to/rig2-image.jpg' },
+        { id: '1199313512', name: 'RIGor si tanggOIL', image: 'path/to/rig3-image.jpg' },
+        { id: '1233193089', name: 'DRILL2GO', image: 'path/to/rig4-image.jpg' },
+        { id: '1780772359', name: "Team O'RIG", image: 'path/to/rig5-image.jpg' },
+        { id: '222362339', name: 'RIG Horse', image: 'path/to/rig6-image.jpg' },
+        { id: '1049770671', name: 'DrillDeck', image: 'path/to/rig7-image.jpg' },
+        { id: '1906865608', name: 'The Lord of the Rigs', image: 'path/to/rig8-image.jpg' },
+        { id: '160502489', name: 'MALUPITOIL', image: 'path/to/rig9-image.jpg' }
+    ];
+
+    const rigEntriesContainer = document.getElementById('rig-entries');
+    let currentRigIndex = 0;
+
+    rigData.forEach((rig, index) => {
+        const rigEntry = `
+            <div class="form-group ${index === 0 ? 'active' : ''}" id="rig-${index}">
+                <label>${rig.name}</label>
+                <img src="${rig.image}" alt="${rig.name} Image" class="rig-image">
+                <div class="rating">
+                    <input type="radio" name="entry.${rig.id}" value="5" id="${rig.name}-5"><label for="${rig.name}-5">&#9733;</label>
+                    <input type="radio" name="entry.${rig.id}" value="4" id="${rig.name}-4"><label for="${rig.name}-4">&#9733;</label>
+                    <input type="radio" name="entry.${rig.id}" value="3" id="${rig.name}-3"><label for="${rig.name}-3">&#9733;</label>
+                    <input type="radio" name="entry.${rig.id}" value="2" id="${rig.name}-2"><label for="${rig.name}-2">&#9733;</label>
+                    <input type="radio" name="entry.${rig.id}" value="1" id="${rig.name}-1"><label for="${rig.name}-1">&#9733;</label>
+                </div>
+            </div>
+        `;
+        rigEntriesContainer.innerHTML += rigEntry;
+    });
+
+    const rigEntries = document.querySelectorAll("#rig-entries .form-group");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+
+    function updateRigDisplay() {
+        rigEntries.forEach((entry, index) => {
+            entry.classList.toggle("active", index === currentRigIndex);
+        });
+    }
+
+    prevBtn.addEventListener("click", () => {
+        currentRigIndex = (currentRigIndex > 0) ? currentRigIndex - 1 : rigEntries.length - 1;
+        updateRigDisplay();
+    });
+
+    nextBtn.addEventListener("click", () => {
+        currentRigIndex = (currentRigIndex < rigEntries.length - 1) ? currentRigIndex + 1 : 0;
+        updateRigDisplay();
+    });
+</script>
+
+</body>
+</html>
